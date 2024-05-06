@@ -38,7 +38,7 @@ def downLoadFolder():
 
 def askUser():
     # Read user input for Git repository URL, repository name, folder path, and branch name
-    gitRepo = input("\033[1;32mEnter git repo URL (default: https://github.com/trueredfence/DevOps.git): \033[0m") or "https://github.com/trueredfence/DevOps.git"
+    gitRepo = input("\033[1;32mEnter git repo URL (default: https://github.com/trueredfence/DevOps-Project.git): \033[0m") or "https://github.com/trueredfence/DevOps-Project.git"
     folderPath = input("\033[1;32mEnter folder path to clone (default: Docker): \033[0m") or "Docker"
     branchName = input("\033[1;32mEnter branch name (default: main): \033[0m") or "main"
 
