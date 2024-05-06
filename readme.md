@@ -7,7 +7,7 @@
 
 ## Github Commands
 
-- [`Github`](https://github.com/trueredfence/github) - Common used commands
+- [`Github`](Github) - Common used commands
 
 ## Python Script for windows/linux/mac to download selected Project folder from this repo
 
