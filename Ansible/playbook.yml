@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - block:
+        - name: Install Apache2 on Ubuntu
+          include_role:
+            name: apache
+          vars:
+            ssl: true # if you want to enable SSL configuration in apache
+            self_signed: true # if you have own certificate else set to true
+      when: "'lamp' in group_names"
