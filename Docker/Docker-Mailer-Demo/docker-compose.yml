@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+    database:
+        image: mysql
+        container_name: "redfence-DB"
+        restart: "always"
+        ports:
+            - "127.0.0.1:3306:3306"
+        volumes:
+            # - ${MYSQL_INITDB_DIR-./config/initdb}:/docker-entrypoint-initdb.d
+            - cnc_vol:/var/lib/mysql
+            - ./logs/mysql:/var/log/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: tiger
+            MYSQL_DATABASE: redfence
+            MYSQL_USER: redfence
+            MYSQL_PASSWORD: redfence
+    phpmyadmin:
+        image: phpmyadmin
+        container_name: "redfence-PhpMyadmin"
+        restart: always
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: database
+            PMA_PORT: 3306
+            UPLOAD_LIMIT: ${UPLOAD_LIMIT}
+            MEMORY_LIMIT: ${MEMORY_LIMIT}
+    phisserver:
+        build:
+            context: .
+            dockerfile: "./Dockerfile.mailhog"
+        container_name: "RedFence-MailHog"
+        restart: "always"
+        ports:
+            - "8025:8025"
+            - "1025:1025"
+volumes:
+    cnc_vol:
+        external: true
