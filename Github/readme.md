@@ -130,3 +130,29 @@ git clone <reponame> <destination>
 git fetch --all
 git branch -a
 ```
+
+### Delete Remote & Local branch and sysnc with remote
+```
+# 1. Switch to a different branch (e.g., main)
+git checkout main
+
+# 2. Delete the local branch
+git branch -d branch_name
+# or force delete if necessary
+git branch -D branch_name
+
+# 3. Delete the remote branch
+git push origin --delete branch_name
+
+# 4. Fetch the latest changes
+git fetch origin
+
+# 5. Prune deleted branches
+git remote prune origin
+
+# 6. Pull latest changes from the main branch
+git pull origin main
+# Optionally, pull changes for other branches if needed
+git pull origin other_branch_name
+
+```
