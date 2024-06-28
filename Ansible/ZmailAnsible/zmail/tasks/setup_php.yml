@@ -1,0 +1,21 @@
+---
+- name: Check if PHP is installed.
+  command: which php
+  changed_when: false
+  failed_when: false
+  register: php_installed
+
+- name: Add PHP PPA repository
+  apt_repository:
+    repo: "ppa:ondrej/php"
+    state: present
+    update_cache: yes
+  when: php_installed.rc != 0
+
+- name: Install PHP 8.2 modules
+  apt:
+    name: "{{ php82_modules }}"
+    update_cache: yes
+    state: present
+  # when: php_installed.rc != 0
+  notify: restart-apache
