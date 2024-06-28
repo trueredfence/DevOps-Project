@@ -21,6 +21,7 @@
     mode: 0644
   with_items: "{{ apache_mods_enabled }}"
   notify: restart-apache
+
 # Remove Default VHost File
 - name: Remove default vhost in sites-enabled.
   file:

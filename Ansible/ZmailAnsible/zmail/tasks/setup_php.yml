@@ -17,5 +17,35 @@
     name: "{{ php82_modules }}"
     update_cache: yes
     state: present
-  # when: php_installed.rc != 0
+  when: php_installed.rc != 0
   notify: restart-apache
+
+- name: Install PHP Apache Moudule
+  apt:
+    name: libapache2-mod-php8.2
+    update_cache: yes
+    state: present
+  when: not enable_fpm
+  notify: restart-apache
+
+# FPM Configure
+- name: Enable php for apahce
+  file:
+    src: "/etc/apache2/mods-available/{{ php_version }}.load"
+    dest: "/etc/apache2/mods-enabled/{{ php_version }}.load"
+    state: link
+    mode: 0644
+  when: not enable_fpm
+  notify: restart-apache
+
+# apache FPM Enable
+- name: Enable mod_proxy_fcgi.
+  file:
+    src: "/etc/apache2/mods-available/{{ item }}"
+    dest: "/etc/apache2/mods-enabled/{{ item }}"
+    state: link
+    mode: 0644
+  with_items:
+    - proxy.load
+    - proxy_fcgi.load
+  when: enable_fpm | bool
