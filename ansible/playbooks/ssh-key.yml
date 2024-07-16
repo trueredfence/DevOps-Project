@@ -1,0 +1,43 @@
+- name: Add SSH key and configure SSH settings
+  hosts: "{{ my_hosts | d([]) }}"
+  vars:
+    new_ssh_key_name: "{{ lookup('file', './files/ops.pub') }}"
+  become: true
+
+  tasks:
+    - name: Install public keys
+      ansible.posix.authorized_key:
+        user: "{{ lookup('env', 'USER') }}"
+        state: present
+        key: "{{ new_ssh_key_name }}"
+
+    - name: Ensure sudo requires a password
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: "^%sudo"
+        # line: "%sudo ALL=(ALL:ALL) ALL"
+        line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+        validate: /usr/sbin/visudo -cf %s
+
+    - name: Disable root SSH login
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: "^PermitRootLogin"
+        line: "PermitRootLogin no"
+        notify: Restart sshd
+
+    - name: Disable password login in SSH
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: "^PasswordAuthentication"
+        line: "PasswordAuthentication no"
+        notify: Restart sshd
+
+  handlers:
+    - name: Restart sshd
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
