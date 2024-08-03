@@ -46,7 +46,7 @@ done
 
 echo "All key pairs have been generated and saved in $KEY_DIR."
 ```
-### Conf file Host A VPS
+### Conf file Host A VPS `/etc/wireguard/wg0.conf`
 ```ini
 # Host A
 [Interface]
@@ -67,7 +67,7 @@ PreUp = sysctl -w net.ipv4.ip_forward=1
 PreUp = ip rule add iif wg0 table 123 priority 456
 PostDown = ip rule del iif wg0 table 123 priority 456
 ```
-### Host B Conf
+### Host B Conf `/etc/wireguard/wg0.conf`
 ```ini
 # Host B
 [Interface]
@@ -93,7 +93,7 @@ PreUp = ip rule add iif wg0 table 123 priority 456
 PostDown = ip rule del iif wg0 table 123 priority 456
 ```
 
-### Host C config or End point host where we have internet exit point
+### Host C config or End point host where we have internet exit point `/etc/wireguard/wg0.conf`
 
 ```ini
 # Host -C
