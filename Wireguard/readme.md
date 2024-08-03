@@ -1,6 +1,6 @@
 # Wireguard Centos 7
-
-### change vault repo in CentosBase
+## Install in Cento 7
+` change vault repo in CentosBase`
 ```bash
 yum update -y
 yum install yum-utils vim wget -y
