@@ -51,6 +51,7 @@ echo "All key pairs have been generated and saved in $KEY_DIR."
 # Host A
 [Interface]
 Address = 10.10.10.1/24
+SaveConfig = true
 PrivateKey = YCc2sgK/jpJJBdBiw4LQLPjE8Fh0xE4HuITKy1QQ0lY= # Host A Private key
 ListenPort = 51820
 Table = 123
