@@ -55,6 +55,10 @@ PrivateKey = YCc2sgK/jpJJBdBiw4LQLPjE8Fh0xE4HuITKy1QQ0lY= # Host A Private key
 ListenPort = 51820
 Table = 123
 
+PreUp = sysctl -w net.ipv4.ip_forward=1
+PreUp = ip rule add iif wg0 table 123 priority 456
+PostDown = ip rule del iif wg0 table 123 priority 456
+
 # Remote setting for 2nd hope
 [Peer] 
 PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= #Host B Public key
@@ -62,10 +66,6 @@ AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/
 Endpoint = <host-B ip>:51820
 PersistentKeepalive = 25
 
-PreUp = sysctl -w net.ipv4.ip_forward=1
-# Routing rule for wg0
-PreUp = ip rule add iif wg0 table 123 priority 456
-PostDown = ip rule del iif wg0 table 123 priority 456
 ```
 ### Host B Conf `/etc/wireguard/wg0.conf`
 ```ini
@@ -75,6 +75,10 @@ Address = 10.10.10.2/24
 PrivateKey = 2LO30hRtR3Ul0C35/nzlO//dX9pdQZ4o4Qk4f6wimFU= # Host B Private key
 ListenPort = 51820
 Table = 123
+
+PreUp = sysctl -w net.ipv4.ip_forward=1
+PreUp = ip rule add iif wg0 table 123 priority 456
+PostDown = ip rule del iif wg0 table 123 priority 456
 
 [Peer]
 PublicKey = 0fzuxRTjhV7tpaU575fYXxBe0KxFpZiyyxDA0w+EH0I= Host A Public Key
@@ -87,10 +91,6 @@ AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/
 Endpoint = <host-C ip>:51820
 PersistentKeepalive = 25
 
-PreUp = sysctl -w net.ipv4.ip_forward=1
-# Routing rule for wg0
-PreUp = ip rule add iif wg0 table 123 priority 456
-PostDown = ip rule del iif wg0 table 123 priority 456
 ```
 
 ### Host C config or End point host where we have internet exit point `/etc/wireguard/wg0.conf`
@@ -102,12 +102,6 @@ PrivateKey = 4N4EdSgB69soXBfsjHP/rgFPCdq5/NnUyXR3hdB21UU= # host c private key
 Address = 10.10.10.3/24
 ListenPort = 51820
 Table = 123
-
-[Peer] # host -b PUblic key
-PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= # host be public key
-AllowedIPs = 10.10.10.2/32
-PersistentKeepalive = 25
-
 PreUp = sysctl -w net.ipv4.ip_forward=1
 PreUp = ip rule add iif wg0 table 123 priority 456
 PostDown = ip rule del iif wg0 table 123 priority 456
@@ -115,6 +109,12 @@ PostDown = ip rule del iif wg0 table 123 priority 456
 # Masquerade traffic for outgoing internet access
 PostUp = iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+[Peer] # host -b PUblic key
+PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= # host be public key
+AllowedIPs = 10.10.10.2/32
+# PersistentKeepalive = 25
+
 ```
 ### Firewall cmd for Hope
 ```bash
