@@ -4,7 +4,7 @@ This guide provides the configuration details and necessary commands to set up a
 
 ## HostA Configuration
 
-### `/etc/wireguard/wg0.conf` for HostA, B, C
+### `/etc/wireguard/wg0.conf` for HostA, C
 ```ini
 [Interface]
 PrivateKey = <HostA_Private_Key>
@@ -32,7 +32,31 @@ ip rule add from <your_client_ip> to <HostA_IP> table main priority 100
 
 # Reload firewalld
 firewall-cmd --reload
+
 ```
+### Host B conf file
+
+```ini
+[Interface]
+PrivateKey = <HostB_Private_Key>
+Address = 10.0.1.1/24
+
+[Peer]
+PublicKey = <HostA_Public_Key>
+AllowedIPs = 10.0.0.0/24
+PersistentKeepalive = 25
+
+[Peer]
+PublicKey = <HostC_Public_Key>
+Endpoint = <HostC_IP>:51820
+AllowedIPs = 0.0.0.0/0
+
+PreUp = sysctl -w net.ipv4.ip_forward=1
+PreUp = ip rule add iif wg0 table 123 priority 456
+PostDown = ip rule del iif wg0 table 123 priority 456
+
+```
+
 ### `/etc/wireguard/wg0.conf` for HostD
 ```ini
 [Interface]
