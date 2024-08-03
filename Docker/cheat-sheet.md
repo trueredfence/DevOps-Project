@@ -2,10 +2,6 @@
 
 A CheatSheet to get you started with docker 
 
-<p align="center">
-<img src="docker.png" height=520px width=470px>
-</p>
-
 ## Installation 
 ```sh
  
@@ -36,12 +32,6 @@ A CheatSheet to get you started with docker
     sudo systemctl status docker 
 
 ```
-
-## Difference between Docker and VMs
-
-<p align="center">
-<img src="https://uploads.toptal.io/blog/image/91505/toptal-blog-image-1438607369520-110213f5682347c7ea0c68d46bb17d6d.jpg" >
-</p>
 
 
 ## Docker commands :whale2:
@@ -170,13 +160,7 @@ A CheatSheet to get you started with docker
 
 ```
 
-## Cool Links to Follow and Checkout
 
-- How Netflix Uses Devops
-  [Blog 1](https://netflixtechblog.com/applying-netflix-devops-patterns-to-windows-2a57f2dbbf79)
-  [Blog 2](https://netflixtechblog.com/full-cycle-developers-at-netflix-a08c31f83249)
-
-- [Kubernetes  Quora](https://www.quora.com/q/quoraengineering/Adopting-Kubernetes-at-Quora)
 
 - [Devops  Mercedes-Benz](https://www.youtube.com/watch?v=PR-vV1zS1JE&feature=youtu.be)
 
