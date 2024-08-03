@@ -46,3 +46,24 @@ done
 
 echo "All key pairs have been generated and saved in $KEY_DIR."
 ```
+### Conf file Host A VPS
+```ini
+# Host A
+[Interface]
+Address = 10.10.10.1/24
+PrivateKey = YCc2sgK/jpJJBdBiw4LQLPjE8Fh0xE4HuITKy1QQ0lY= # Host A Private key
+ListenPort = 51823
+Table = 123
+
+# Remote setting for 2nd hope
+[Peer] 
+PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= #Host B Public key
+AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/1` instead
+Endpoint = <host-B ip>:51820
+PersistentKeepalive = 25
+
+PreUp = sysctl -w net.ipv4.ip_forward=1
+# Routing rule for wg0
+PreUp = ip rule add iif wg0 table 123 priority 456
+PostDown = ip rule del iif wg0 table 123 priority 456
+```
