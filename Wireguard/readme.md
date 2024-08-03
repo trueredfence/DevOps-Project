@@ -14,4 +14,4 @@ sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/k
 yum install kernel-plus wireguard-tools
 reboot
 ```
-[Additional Link][https://www.wireguard.com/install/]
+[Additional Link](https://www.wireguard.com/install/)
