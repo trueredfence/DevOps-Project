@@ -52,7 +52,7 @@ echo "All key pairs have been generated and saved in $KEY_DIR."
 [Interface]
 Address = 10.10.10.1/24
 PrivateKey = YCc2sgK/jpJJBdBiw4LQLPjE8Fh0xE4HuITKy1QQ0lY= # Host A Private key
-ListenPort = 51823
+ListenPort = 51820
 Table = 123
 
 # Remote setting for 2nd hope
@@ -73,7 +73,7 @@ PostDown = ip rule del iif wg0 table 123 priority 456
 [Interface]
 Address = 10.10.10.2/24
 PrivateKey = 2LO30hRtR3Ul0C35/nzlO//dX9pdQZ4o4Qk4f6wimFU= # Host B Private key
-ListenPort = 51823
+ListenPort = 51820
 Table = 123
 
 [Peer]
@@ -100,7 +100,7 @@ PostDown = ip rule del iif wg0 table 123 priority 456
 [Interface]
 PrivateKey = 4N4EdSgB69soXBfsjHP/rgFPCdq5/NnUyXR3hdB21UU= # host c private key
 Address = 10.10.10.3/24
-ListenPort = 51823
+ListenPort = 51820
 Table = 123
 
 [Peer] # host -b PUblic key
