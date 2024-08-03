@@ -93,7 +93,7 @@ PreUp = ip rule add iif wg0 table 123 priority 456
 PostDown = ip rule del iif wg0 table 123 priority 456
 ```
 
-### Host C config
+### Host C config or End point host where we have internet exit point
 
 ```ini
 # Host -C
@@ -115,4 +115,33 @@ PostDown = ip rule del iif wg0 table 123 priority 456
 # Masquerade traffic for outgoing internet access
 PostUp = iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+```
+### Firewall cmd for Hope
+```bash
+# Add WireGuard port
+firewall-cmd --permanent --add-port=51820/udp
+
+# Ensure SSH traffic uses the main routing table
+ip rule add from <your_client_ip> to <HostC_IP> table main priority 100
+
+# Reload firewalld
+firewall-cmd --reload
+
+```
+### Firewall Cmd for Exit point
+```bash
+# Add WireGuard port
+firewall-cmd --permanent --add-port=51820/udp
+
+# Exclude SSH traffic from masquerading
+iptables -t nat -A POSTROUTING -p tcp --dport 22 -j ACCEPT
+
+# Apply masquerading for other traffic
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+# Ensure SSH traffic uses the main routing table
+ip rule add from <your_client_ip> to <HostD_IP> table main priority 100
+
+# Reload firewalld
+firewall-cmd --reload
 ```
