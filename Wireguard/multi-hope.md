@@ -24,7 +24,8 @@ PostDown = ip rule del iif wg0 table 123 priority 456
 ```
 
 ### firewall Cmds for HostA,B,C
-```# Add WireGuard port
+```bash
+# Add WireGuard port
 firewall-cmd --permanent --add-port=51820/udp
 
 # Ensure SSH traffic uses the main routing table
@@ -77,7 +78,7 @@ PostUp = iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 ```
 ### firewall Cmds for HostD
-```
+```bash
 # Add WireGuard port
 firewall-cmd --permanent --add-port=51820/udp
 
