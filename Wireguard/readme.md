@@ -1,4 +1,4 @@
-# Wireguard Centos 7/9 & Docker
+# Wireguard Centos 7
 
 ### change vault repo in CentosBase
 ```bash
