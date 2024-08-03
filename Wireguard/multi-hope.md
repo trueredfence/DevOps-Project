@@ -95,3 +95,4 @@ ip rule add from <your_client_ip> to <HostD_IP> table main priority 100
 firewall-cmd --reload
 
 ```
+yum install wireguard-dkms wireguard-tools qrencode
