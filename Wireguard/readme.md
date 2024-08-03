@@ -144,4 +144,8 @@ ip rule add from <your_client_ip> to <HostD_IP> table main priority 100
 
 # Reload firewalld
 firewall-cmd --reload
+
+# More
+sudo firewall-cmd --zone=public --permanent --add-masquerade
+sudo systemctl reload firewalld
 ```
