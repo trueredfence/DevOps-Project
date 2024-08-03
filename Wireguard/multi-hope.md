@@ -34,7 +34,7 @@ ip rule add from <your_client_ip> to <HostA_IP> table main priority 100
 firewall-cmd --reload
 ```
 ### `/etc/wireguard/wg0.conf` for HostD
-```
+```ini
 [Interface]
 PrivateKey = <HostD_Private_Key>
 Address = 10.0.3.1/24
