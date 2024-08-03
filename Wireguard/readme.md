@@ -67,3 +67,28 @@ PreUp = sysctl -w net.ipv4.ip_forward=1
 PreUp = ip rule add iif wg0 table 123 priority 456
 PostDown = ip rule del iif wg0 table 123 priority 456
 ```
+### Host B Conf
+```ini
+# Host B
+[Interface]
+Address = 10.10.10.2/24
+PrivateKey = 2LO30hRtR3Ul0C35/nzlO//dX9pdQZ4o4Qk4f6wimFU= # Host B Private key
+ListenPort = 51823
+Table = 123
+
+[Peer]
+PublicKey = 0fzuxRTjhV7tpaU575fYXxBe0KxFpZiyyxDA0w+EH0I= Host A Public Key
+AllowedIPs = 10.10.10.1/32
+
+# Remote setting for 3nd hope
+[Peer] 
+PublicKey = hlIchsikADC7Y9VAYDgUexcC9D7YiUI0nLCWFCxEEHY= #Host C Public key
+AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/1` instead
+Endpoint = <host-C ip>:51820
+PersistentKeepalive = 25
+
+PreUp = sysctl -w net.ipv4.ip_forward=1
+# Routing rule for wg0
+PreUp = ip rule add iif wg0 table 123 priority 456
+PostDown = ip rule del iif wg0 table 123 priority 456
+```
