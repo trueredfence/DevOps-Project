@@ -100,6 +100,8 @@ PostDown = ip rule del iif wg0 table 123 priority 456
 [Interface]
 PrivateKey = 4N4EdSgB69soXBfsjHP/rgFPCdq5/NnUyXR3hdB21UU= # host c private key
 Address = 10.10.10.3/24
+ListenPort = 51823
+Table = 123
 
 [Peer] # host -b PUblic key
 PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= # host be public key
