@@ -148,4 +148,6 @@ firewall-cmd --reload
 # More
 sudo firewall-cmd --zone=public --permanent --add-masquerade
 sudo systemctl reload firewalld
+echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
+
 ```
