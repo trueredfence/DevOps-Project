@@ -46,6 +46,20 @@ done
 
 echo "All key pairs have been generated and saved in $KEY_DIR."
 ```
+### Normal Client who want to connect to server
+```ini
+[Interface]
+Address = 10.10.10.1/24
+PrivateKey = 0FMm7LSS3N8ewxx/9NAlYHGa1LKLJbGO/DWcKgah1HI=
+ListenPort = 51820
+SaveConfig = true
+[Peer]
+PublicKey = <public key server>
+AllowedIPs = 0.0.0.0/0
+Endpoint = <next_hope_ip>:51820
+PersistentKeepalive = 25
+
+```
 ### Conf file Host A VPS `/etc/wireguard/wg0.conf`
 ```ini
 # Host A
