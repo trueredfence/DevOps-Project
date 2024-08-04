@@ -102,14 +102,14 @@ PersistentKeepalive = 25
 PrivateKey = 4N4EdSgB69soXBfsjHP/rgFPCdq5/NnUyXR3hdB21UU= # host c private key
 Address = 10.10.10.3/24
 ListenPort = 51820
-Table = 123
+#Table = 123
 PreUp = sysctl -w net.ipv4.ip_forward=1
-PreUp = ip rule add iif wg0 table 123 priority 456
-PostDown = ip rule del iif wg0 table 123 priority 456
+#PreUp = ip rule add iif wg0 table 123 priority 456
+#PostDown = ip rule del iif wg0 table 123 priority 456
 
 # Masquerade traffic for outgoing internet access
-PostUp = iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
 [Peer] # host -b PUblic key
 PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= # host be public key
