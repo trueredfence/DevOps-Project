@@ -216,8 +216,8 @@ create_server_config() {
     echo "Table = 123" >> $config_file
 
     echo "PreUp = sysctl -w net.ipv4.ip_forward=1" >> $config_file
-    echo "PreUp = ip rule add iif wg0 table 123 priority 456" >> $config_file
-    echo "PostDown = ip rule del iif wg0 table 123 priority 456" >> $config_file
+    echo "#PreUp = ip rule add iif wg0 table 123 priority 456" >> $config_file
+    echo "#PostDown = ip rule del iif wg0 table 123 priority 456" >> $config_file
 
     echo "[Peer]" >> $config_file
     echo "PublicKey = $previous_peer_public_key" >> $config_file
