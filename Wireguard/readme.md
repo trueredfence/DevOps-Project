@@ -188,6 +188,7 @@ create_client_config() {
     echo "[Interface]" > $config_file
     echo "Address = 10.10.10.${address_suffix}/24" >> $config_file
     echo "PrivateKey = $private_key" >> $config_file
+    echo "DND = 1.1.1.1 8.8.8.8 9.9.9.9" >> $config_file
     echo "ListenPort = 51820" >> $config_file
     echo "SaveConfig = true" >> $config_file
 
