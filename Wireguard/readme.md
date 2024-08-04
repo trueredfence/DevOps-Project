@@ -155,7 +155,7 @@ echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 ### Create conf file auto with bash
 ```bash
 #!/bin/bash
-
+# ./createrole.sh client server server gateway
 # Function to generate keys and save them
 generate_keys() {
     private_key=$(wg genkey)
