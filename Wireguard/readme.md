@@ -133,38 +133,17 @@ AllowedIPs = 10.10.10.2/32
 ```
 ### Firewall cmd for Hope
 ```bash
-# Add WireGuard port
 firewall-cmd --permanent --add-port=51820/udp
-
-# Ensure SSH traffic uses the main routing table
-ip rule add from <your_client_ip> to <HostC_IP> table main priority 100
-
-# Reload firewalld
 firewall-cmd --reload
-
+echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 ```
 ### Firewall Cmd for Exit point
 ```bash
 # Add WireGuard port
 firewall-cmd --permanent --add-port=51820/udp
-
-# Exclude SSH traffic from masquerading
-iptables -t nat -A POSTROUTING -p tcp --dport 22 -j ACCEPT
-
-# Apply masquerading for other traffic
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-# Ensure SSH traffic uses the main routing table
-ip rule add from <your_client_ip> to <HostD_IP> table main priority 100
-
-# Reload firewalld
-firewall-cmd --reload
-
-# More
-sudo firewall-cmd --zone=public --permanent --add-masquerade
-sudo systemctl reload firewalld
+firewall-cmd --zone=public --permanent --add-masquerade
+systemctl reload firewalld
 echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
-
 ```
 ### Create conf file auto with bash
 ```bash
