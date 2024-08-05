@@ -1,35 +1,56 @@
 # Wireguard Centos 7
 
-## Install in Cento 7
+## Install wiregurad in Cento 7
 
 > [!IMPORTANT]
 > As Centos7 comes to EOL we have to change Centos-Base.repo in centos7.
 > [Centos7 Base Repo Link](../Centos7)
 
+### Follow below step and reboot
+
 ```bash
 yum update -y
 yum install yum-utils vim wget -y
-reboot
-
 yum install epel-release elrepo-release -y
 yum install kmod-wireguard wireguard-tools -y
-
 yum-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
 sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/kernel
 yum install kernel-plus wireguard-tools
 reboot
 ```
 
+### Firewall cmd for Hope
+
+```bash
+firewall-cmd --permanent --add-port=51820/udp
+firewall-cmd --reload
+echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
+```
+
+### Firewall Cmd for Exit point/ Gateway
+
+```bash
+# Add WireGuard port
+firewall-cmd --permanent --add-port=51820/udp
+firewall-cmd --zone=public --permanent --add-masquerade
+systemctl reload firewalld
+echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
+```
+
+### Create conf file auto with bash
+
 [Additional Link](https://www.wireguard.com/install/)
 
 ### Create pair of keys
 
-```
+```bash
 # Manually
 sudo mkdir -p /etc/wireguard/
 cd /etc/wireguard
 wg genkey | sudo tee /etc/wireguard/server_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
 ```
+
+### Script to create keypair for wireguard
 
 ```bash
 #!/bin/bash
@@ -58,11 +79,13 @@ echo "All key pairs have been generated and saved in $KEY_DIR."
 ### Normal Client who want to connect to server
 
 ```ini
+# /etc/wireguard/wg0.conf
 [Interface]
-Address = 10.10.10.1/24
-PrivateKey = 0FMm7LSS3N8ewxx/9NAlYHGa1LKLJbGO/DWcKgah1HI=
+Address = 10.10.10.1.x/24
+PrivateKey = <Privatekey>
 ListenPort = 51820
 SaveConfig = true
+
 [Peer]
 PublicKey = <public key server>
 AllowedIPs = 0.0.0.0/0
@@ -74,23 +97,24 @@ PersistentKeepalive = 25
 ### Conf file Host A VPS `/etc/wireguard/wg0.conf`
 
 ```ini
+# /etc/wireguard/wg0.conf
 # Host A
 [Interface]
 Address = 10.10.10.1/24
 SaveConfig = true
-PrivateKey = YCc2sgK/jpJJBdBiw4LQLPjE8Fh0xE4HuITKy1QQ0lY= # Host A Private key
+PrivateKey = <private key>
 ListenPort = 51820
 Table = 123
 
 PreUp = sysctl -w net.ipv4.ip_forward=1
-PreUp = ip rule add iif wg0 table 123 priority 456
-PostDown = ip rule del iif wg0 table 123 priority 456
+#PreUp = ip rule add iif wg0 table 123 priority 456
+#PostDown = ip rule del iif wg0 table 123 priority 456
 
 # Remote setting for 2nd hope
 [Peer]
-PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= #Host B Public key
+PublicKey = <next hope public key>
 AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/1` instead
-Endpoint = <host-B ip>:51820
+Endpoint = <next-hope-ip>:51820
 PersistentKeepalive = 25
 
 ```
@@ -98,26 +122,27 @@ PersistentKeepalive = 25
 ### Host B Conf `/etc/wireguard/wg0.conf`
 
 ```ini
+# /etc/wireguard/wg0.conf
 # Host B
 [Interface]
 Address = 10.10.10.2/24
-PrivateKey = 2LO30hRtR3Ul0C35/nzlO//dX9pdQZ4o4Qk4f6wimFU= # Host B Private key
+PrivateKey = <private key>
 ListenPort = 51820
 Table = 123
 
 PreUp = sysctl -w net.ipv4.ip_forward=1
-PreUp = ip rule add iif wg0 table 123 priority 456
-PostDown = ip rule del iif wg0 table 123 priority 456
+# PreUp = ip rule add iif wg0 table 123 priority 456
+# PostDown = ip rule del iif wg0 table 123 priority 456
 
 [Peer]
-PublicKey = 0fzuxRTjhV7tpaU575fYXxBe0KxFpZiyyxDA0w+EH0I= Host A Public Key
-AllowedIPs = 10.10.10.1/32
+PublicKey = <previous-host-public-key>
+AllowedIPs = <previous-host-ip>/32
 
 # Remote setting for 3nd hope
 [Peer]
-PublicKey = hlIchsikADC7Y9VAYDgUexcC9D7YiUI0nLCWFCxEEHY= #Host C Public key
+PublicKey = <private key>
 AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/1` instead
-Endpoint = <host-C ip>:51820
+Endpoint = <nex-hope-ip>:51820
 PersistentKeepalive = 25
 
 ```
@@ -125,6 +150,7 @@ PersistentKeepalive = 25
 ### Host C config or End point host where we have internet exit point `/etc/wireguard/wg0.conf`
 
 ```ini
+# /etc/wireguard/wg0.conf
 # Host -C
 [Interface]
 PrivateKey = 4N4EdSgB69soXBfsjHP/rgFPCdq5/NnUyXR3hdB21UU= # host c private key
@@ -140,31 +166,11 @@ PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
 [Peer] # host -b PUblic key
-PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= # host be public key
-AllowedIPs = 10.10.10.2/32
+PublicKey = <previous host private key>
+AllowedIPs = <privious host ip>/32
 # PersistentKeepalive = 25
 
 ```
-
-### Firewall cmd for Hope
-
-```bash
-firewall-cmd --permanent --add-port=51820/udp
-firewall-cmd --reload
-echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
-```
-
-### Firewall Cmd for Exit point
-
-```bash
-# Add WireGuard port
-firewall-cmd --permanent --add-port=51820/udp
-firewall-cmd --zone=public --permanent --add-masquerade
-systemctl reload firewalld
-echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
-```
-
-### Create conf file auto with bash
 
 ```bash
 #!/bin/bash
@@ -212,7 +218,7 @@ create_server_config() {
     echo "Address = 10.10.10.${address_suffix}/24" >> $config_file
     echo "PrivateKey = $private_key" >> $config_file
     echo "ListenPort = 51820" >> $config_file
-    echo "Table = 123" >> $config_file
+    echo "#Table = 123" >> $config_file
 
     echo "PreUp = sysctl -w net.ipv4.ip_forward=1" >> $config_file
     echo "#PreUp = ip rule add iif wg0 table 123 priority 456" >> $config_file
@@ -327,4 +333,31 @@ done
 rm role*_private.key role*_public.key
 
 echo "WireGuard configuration files created successfully."
+```
+
+### Command to handle wiregurad server
+
+```bash
+# Up wireguard network
+wg-quick up /etc/wireguard/wg0.conf
+# Down wireguard network
+wg-quick down /etc/wireguard/wg0.conf
+```
+
+You Can Also use to start
+
+```bash
+systemctl start wg-quick@wg0.service
+```
+
+You Can Also use to stop
+
+```bash
+systemctl stop wg-quick@wg0.service
+```
+
+Enable auto-start at system boot time with the following command.
+
+```bash
+sudo systemctl enable wg-quick@wg0.service
 ```
