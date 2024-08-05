@@ -1,6 +1,12 @@
 # Wireguard Centos 7
+
 ## Install in Cento 7
-` change vault repo in CentosBase`
+
+> [!IMPORTANT]
+> As Centos7 comes to EOL we have to change Centos-Base.repo in centos7.
+> [Centos7 Base Repo Link](Centos7)
+> 
+
 ```bash
 yum update -y
 yum install yum-utils vim wget -y
@@ -14,15 +20,18 @@ sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/k
 yum install kernel-plus wireguard-tools
 reboot
 ```
+
 [Additional Link](https://www.wireguard.com/install/)
 
 ### Create pair of keys
+
 ```
 # Manually
 sudo mkdir -p /etc/wireguard/
 cd /etc/wireguard
 wg genkey | sudo tee /etc/wireguard/server_private.key | wg pubkey | sudo tee /etc/wireguard/server_public.key
 ```
+
 ```bash
 #!/bin/bash
 
@@ -46,7 +55,9 @@ done
 
 echo "All key pairs have been generated and saved in $KEY_DIR."
 ```
+
 ### Normal Client who want to connect to server
+
 ```ini
 [Interface]
 Address = 10.10.10.1/24
@@ -60,7 +71,9 @@ Endpoint = <next_hope_ip>:51820
 PersistentKeepalive = 25
 
 ```
+
 ### Conf file Host A VPS `/etc/wireguard/wg0.conf`
+
 ```ini
 # Host A
 [Interface]
@@ -75,14 +88,16 @@ PreUp = ip rule add iif wg0 table 123 priority 456
 PostDown = ip rule del iif wg0 table 123 priority 456
 
 # Remote setting for 2nd hope
-[Peer] 
+[Peer]
 PublicKey = Fol97yuanQrUr68wU+faRIp4gXOMCyBXa9oSwppZGCI= #Host B Public key
 AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/1` instead
 Endpoint = <host-B ip>:51820
 PersistentKeepalive = 25
 
 ```
+
 ### Host B Conf `/etc/wireguard/wg0.conf`
+
 ```ini
 # Host B
 [Interface]
@@ -100,7 +115,7 @@ PublicKey = 0fzuxRTjhV7tpaU575fYXxBe0KxFpZiyyxDA0w+EH0I= Host A Public Key
 AllowedIPs = 10.10.10.1/32
 
 # Remote setting for 3nd hope
-[Peer] 
+[Peer]
 PublicKey = hlIchsikADC7Y9VAYDgUexcC9D7YiUI0nLCWFCxEEHY= #Host C Public key
 AllowedIPs = 0.0.0.0/0 # to allow untunneled traffic, use `0.0.0.0/1, 128.0.0.0/1` instead
 Endpoint = <host-C ip>:51820
@@ -131,13 +146,17 @@ AllowedIPs = 10.10.10.2/32
 # PersistentKeepalive = 25
 
 ```
+
 ### Firewall cmd for Hope
+
 ```bash
 firewall-cmd --permanent --add-port=51820/udp
 firewall-cmd --reload
 echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 ```
+
 ### Firewall Cmd for Exit point
+
 ```bash
 # Add WireGuard port
 firewall-cmd --permanent --add-port=51820/udp
@@ -145,7 +164,9 @@ firewall-cmd --zone=public --permanent --add-masquerade
 systemctl reload firewalld
 echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 ```
+
 ### Create conf file auto with bash
+
 ```bash
 #!/bin/bash
 # ./createrole.sh client server server gateway
