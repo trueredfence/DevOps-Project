@@ -359,5 +359,5 @@ systemctl stop wg-quick@wg0.service
 Enable auto-start at system boot time with the following command.
 
 ```bash
-sudo systemctl enable wg-quick@wg0.service
+systemctl enable wg-quick@wg0.service
 ```
