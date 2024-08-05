@@ -9,6 +9,9 @@
 ### Follow below step and reboot
 
 ```bash
+mv /etc/yum.repo.d/Centos-base.repo /etc/yum.repo.d/Centos-base.repo.back
+vm /etc/yum.repo.d/Centos-base.repo
+# Copy [Centos7 Base Repo Link](../Centos7) and past into file
 yum update -y
 yum install yum-utils vim wget -y
 yum install epel-release elrepo-release -y
