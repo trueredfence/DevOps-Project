@@ -16,9 +16,10 @@ yum update -y
 yum install yum-utils vim wget -y
 yum install epel-release elrepo-release -y
 yum install kmod-wireguard wireguard-tools -y
+OR
 yum-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
 sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/kernel
-yum install kernel-plus wireguard-tools
+yum install kernel-plus wireguard-tools -y
 reboot
 ```
 
