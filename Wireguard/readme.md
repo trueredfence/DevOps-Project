@@ -4,8 +4,7 @@
 
 > [!IMPORTANT]
 > As Centos7 comes to EOL we have to change Centos-Base.repo in centos7.
-> [Centos7 Base Repo Link](Centos7)
-> 
+> [Centos7 Base Repo Link](../Centos7)
 
 ```bash
 yum update -y
