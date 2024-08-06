@@ -9,14 +9,11 @@
 ### Follow below step and reboot
 
 ```bash
-mv /etc/yum.repo.d/Centos-base.repo /etc/yum.repo.d/Centos-base.repo.back
-vm /etc/yum.repo.d/Centos-base.repo
-# Copy [Centos7 Base Repo Link](../Centos7) and past into file
 yum update -y
-yum install yum-utils vim wget net-tools -y
+yum install yum-utils -y
 yum install epel-release elrepo-release -y
 yum install kmod-wireguard wireguard-tools -y
-OR
+--OR--
 yum-config-manager --setopt=centosplus.includepkgs=kernel-plus --enablerepo=centosplus --save
 sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/kernel
 yum install kernel-plus wireguard-tools -y
@@ -26,7 +23,11 @@ reboot
 ### Firewall cmd for Hope
 
 ```bash
-firewall-cmd --permanent --add-port=51820/udp
+firewall-cmd --permanent --add-port=51820/udp && \
+firewall-cmd --permanent --add-port=51821/udp && \
+firewall-cmd --permanent --add-port=51822/udp && \
+firewall-cmd --permanent --add-port=51823/udp && \
+firewall-cmd --permanent --add-port=443/udp && \
 firewall-cmd --reload
 echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
 ```
@@ -197,7 +198,7 @@ create_client_config() {
     echo "[Interface]" > $config_file
     echo "Address = 10.10.10.${address_suffix}/24" >> $config_file
     echo "PrivateKey = $private_key" >> $config_file
-    echo "DNS = 1.1.1.1 8.8.8.8 9.9.9.9" >> $config_file
+    echo "DND = 1.1.1.1 8.8.8.8 9.9.9.9" >> $config_file
     echo "ListenPort = 51820" >> $config_file
     echo "SaveConfig = true" >> $config_file
 
