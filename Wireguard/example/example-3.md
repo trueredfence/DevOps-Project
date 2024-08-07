@@ -1,3 +1,5 @@
+# Example-3 Working 
+### Gateway with Net, hope1 and hope2
 ```ini
 [Interface]
 Address = 172.16.0.1/24
