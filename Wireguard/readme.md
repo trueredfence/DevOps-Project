@@ -19,6 +19,16 @@ sed -e 's/^DEFAULTKERNEL=kernel$/DEFAULTKERNEL=kernel-plus/' -i /etc/sysconfig/k
 yum install kernel-plus wireguard-tools -y
 reboot
 ```
+```ini
+additional
+port open then
+sudo firewall-cmd --zone=public --add-masquerade --permanent
+sudo firewall-cmd --zone=public --remove-masquerade --permanent
+firewall-cmd --zone=public --remove-masquerade
+
+sudo ip route add 17.16.0.0/24 dev wg0
+ip route del default via 17.16.0.0/24 dev wg0
+```
 
 ### Firewall cmd for Hope
 
